@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="lt">
+	<head>
+		<title>Pagrindinis puslapis</title>
+		<meta charset="UTF-8"/>
+		<link rel="stylesheet" href="./css/style.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</head>
+<body>
+	<div id="div1">
+		<a href="index.html" class="header">
+			<h2 class="not-selectable">Metamath kalbos vizualizavimas</h2>
+		</a>
+	</div>
+	<br>
+	<div id="div2">
+		<p>Tai yra Metamath kalbos teoremų įrodymų vizualizavimo įrankis. 
+		Tam, kad pradėti paspauskite mygtuką "Pasirinkti failą" ir pasirinkite Metamath duomenų bazę, tai yra
+		.mm tipo failą. Pasirinkus failą, sveitainė verifikuos visus teoremų įrodymus. Jeigu failas gana didelis,
+		teks kažkiek laiko palaukti, kol baigsis verifikavimo procesas.</p>
+	</div>
+	<br>
+	<div id="div3">
+		<button id="choosefile" onclick="document.getElementById('fileInput').click()">Pasirinkti failą</button>
+		<input type='file' id="fileInput" accept=".mm">
+		<p id="fileName"></p>
+	</div>
+	<br>
+	<div id="div4">
+		<p id="isDone"></p>
+	</div>
+  
+
+	<script src="./src/index.js"></script>
+</body>
+</html>

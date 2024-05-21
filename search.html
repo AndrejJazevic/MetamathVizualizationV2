@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="lt">
+	<head>
+		<title>Teoremų paieška</title>
+		<meta charset="UTF-8"/>
+		<link rel="stylesheet" href="./css/style.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	</head>
+<body>
+	<div id="div1">
+		<a href="index.html" class="header">
+			<h2 class="not-selectable">Metamath kalbos vizualizavimas</h2>
+		</a>
+	</div>
+	<div id="div2">
+		<p>Pasirinkite teoremą, kurios įrodymą norite apžvelgti. Priklausomai nuo įrodymų kiekio, teks palaukti, kol užkraus duomenys.
+		Paieškos lauke įveskite teoremos pavadinimą.
+		</p>
+	</div>
+	<br>
+	<div class="container">
+		<div id="container1" class="box"><b id="changefile" class="not-selectable">Keisti failą</b></div>
+	</div>
+	<br>
+	<div class="container">
+		<label id="label1">Palaukite, kol užkraus duomenys...</label>
+		<div class="searchInput">
+			<input id="searchbar" type="text" placeholder="Ieškoti teoremų.." disabled="true">
+		<div class="resultBox">
+			<ul id="list"></ul>
+		</div>
+		</div>
+			<div class="icon"><i class="search"></i></div>
+		</div>
+	</div>
+	
+	
+	<script src="./src/search.js"></script>
+</body>
+</html>
