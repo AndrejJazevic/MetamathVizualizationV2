@@ -1,6 +1,12 @@
 let verifiedLabels = [];
 let verifiedList = [];
 
+
+
+const currentPageName = window.location.pathname.split('/').pop();
+document.getElementById("header").href = currentPageName;
+
+
 const indexedDB = window.indexedDB || 
 				  window.mozIndexedDB ||
 				  window.webkitIndexedDB ||
@@ -524,7 +530,7 @@ function deleteFromDatabase(lines) {
 
         transaction.oncomplete = function(event) {
             window.setTimeout(() => {
-                try {            
+                try {
                     main(lines);
                     addToDatabase(verifiedList);
                 } catch (err) {
@@ -564,7 +570,7 @@ function addToDatabase(verifiedList) {
             const div4 = document.getElementById("div4");
             let anchor = document.createElement('a');
 
-            anchor.href = 'search.html';
+            anchor.href = 'search.html?initial=' + currentPageName;
             anchor.className = 'button';
             anchor.id = "a1";
 
