@@ -2,10 +2,8 @@ let verifiedLabels = [];
 let verifiedList = [];
 
 
-
 const currentPageName = window.location.pathname.split('/').pop();
 document.getElementById("header").href = currentPageName;
-
 
 const indexedDB = window.indexedDB || 
 				  window.mozIndexedDB ||
@@ -278,6 +276,7 @@ class Metamath {
                 }
 
                 this.verify(label, stat, proof);
+				console.log(label);
 				verifiedLabels.push(label);
 				this.labels[label] = ['$p', this.fs.makeAssertion(stat)];
 				label = null;
@@ -396,6 +395,12 @@ class Metamath {
         for (let label of proof) {
             let [stepType, stepData] = this.labels[label];
 			
+			if (stepType === '$e') {
+				info.resultList.push(stepData);
+				info.subsDict.push([]);
+				info.mandList.push([]);
+			}
+			
             if (stepType === '$a' || stepType === '$p') {
                 let [distinct, mandVar, hyp, result] = stepData;
                 let npop = mandVar.length + hyp.length;
@@ -434,6 +439,12 @@ class Metamath {
 				stack.splice(stack.length - npop, stack.length);
 				stack.push(this.applySubst(result, subst));
             } else if (stepType === '$e' || stepType === '$f') {
+				//let [distinct, mandVar, hyp, result] = stepData;
+				//if (result[0] === "|-") {
+				//	info.resultList.push(stepData);
+				//	info.subsDict.push(subst);
+				//	info.mandList.push(mandVar);
+				//}
                 stack.push(stepData);
             }
         }
@@ -454,7 +465,7 @@ function main(input) {
 	verifiedLabels.length = 0;
 	verifiedList.length = 0;
 	const metamath = new Metamath();
-	metamath.read(new Toks(input.reverse()));
+	metamath.read(new Toks(input.reverse()));	
 }
 
 
@@ -486,14 +497,16 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 
 	reader.onload = function(event) {
 		const fileContent = event.target.result;
-		const lines = fileContent.split('\n');
 		
 		let par = document.getElementById('fileName');
-		par.innerHTML = "Pasirinktas failas: " + file.name;
-		
 		let isDone = document.getElementById('isDone');
-		isDone.innerHTML = "Įrodymai verifikuojami...";
-		deleteFromDatabase(lines);
+		if (file.name === "set.mm") {
+			isDone.innerHTML = "Pasirinkite ne set.mm failą.";
+		} else {
+			par.innerHTML = "Pasirinktas failas: " + file.name;
+			isDone.innerHTML = "Įrodymai verifikuojami...";
+			deleteFromDatabase(fileContent);
+		}
 	};
 	reader.readAsText(file);
 });
@@ -527,25 +540,30 @@ function deleteFromDatabase(lines) {
         }
 
         let transaction = db.transaction('proofs', 'readwrite');
-
-        transaction.oncomplete = function(event) {
-            window.setTimeout(() => {
-                try {
-                    main(lines);
-                    addToDatabase(verifiedList);
-                } catch (err) {
-                    isDone.innerHTML = "Tikrinimo metu atsirado klaida. Ištaisykite failą arba įkelkite kitą.";
-                    console.error(err);
-                }
-            }, 10);
+		
+		let store = transaction.objectStore('proofs');
+		store.clear();
+		
+		transaction.oncomplete = function(event) {
+            window.setTimeout(async () => {
+				try {
+					const response = await fetch('/file');
+					const input = await response.text();
+					
+					let total = input + lines;
+					
+					main(total.split('\n'));						
+					addToDatabase(verifiedList);
+				} catch (err) {
+					isDone.innerHTML = "Tikrinimo metu atsirado klaida. Ištaisykite failą arba įkelkite kitą.";
+					console.error('Error:', err);
+				}
+			}, 10);
         };
 
         transaction.onerror = function(event) {
             console.error('Transaction error:', event.target.error);
         };
-
-        let store = transaction.objectStore('proofs');
-        store.clear();
     });
 }
 
@@ -582,4 +600,54 @@ function addToDatabase(verifiedList) {
             console.error('Transaction error:', event.target.error);
         };
     });
+}
+
+function addSetMM(verifiedList) {
+	openDatabase(function(db) {
+        let transaction = db.transaction('proofs', 'readwrite');
+        
+        let store = transaction.objectStore('proofs');
+        
+        for (let i = 0; i < verifiedList.length; i++) {
+            let data = { id: i, label: verifiedList[i].label, provingExpression: verifiedList[i].provingExpression, 
+            resultList: verifiedList[i].resultList, subsDict: verifiedList[i].subsDict, mandList: verifiedList[i].mandList };
+            let addRequest = store.add(data);
+            
+            addRequest.onerror = function(event) {
+                console.error('Add request error:', event.target.error);
+            };
+        }
+        
+        transaction.oncomplete = function(event) {
+            
+        };
+
+        transaction.onerror = function(event) {
+            console.error('Transaction error:', event.target.error);
+        };
+    });
+}
+
+function checkVersion(input) {
+	openDatabase(function(db) {
+		let transaction = db.transaction('load', 'readwrite');
+	
+		let objectStore = transaction.objectStore('load');
+	
+	 	let getRequest = objectStore.getAll();
+	
+		getRequest.onsuccess = function(event) {
+			let data = event.target.result;
+			if (data.length === 0) {
+				main(input.split('\n'));
+				addSetMM(verifiedList);
+				let version = { id: 1 };
+				let addRequest = objectStore.add(version);
+			}
+		};
+		
+		transaction.oncomplete = function(event) {
+
+        };
+	});
 }

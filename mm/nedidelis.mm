@@ -27,10 +27,10 @@ $)
       w1 $a wff x - $.
 
       $( 2 is a wff $)
-      t0 $p wff - - $= w0 w1 $.
+      t0 $a wff - - $.
 
       $( 3 is a wff $)
-      t1 $p wff - - - $= w0 w1 w1 $.
+      t1 $a wff - - - $.
 
       $( x + - = x - $)
       ax0 $a |- x p - q x - $.

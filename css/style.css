@@ -7,7 +7,7 @@
 	left: 0;
 }
 
-a.header {
+#header {
 	text-decoration: none;
 	color: black;
 	display: block;
@@ -83,9 +83,10 @@ a.button {
 	line-height: 10px;
 	border-radius: 100px;
 	cursor: pointer;
+	margin-top: 10px;
 }
 
-.box1 {
+.click {
     display: inline-block;
     width: 300px;
     height: 40px;
@@ -94,7 +95,6 @@ a.button {
 	text-align: center;
 	line-height: 10px;
 	border-radius: 100px;
-	cursor: pointer;
 }
 
 body {
@@ -105,7 +105,7 @@ body {
     cursor: pointer;
 	background-color: #A2F9BD;
 }
-.box1:hover {
+.click:hover {
     cursor: pointer;
 	background-color: #A2F9BD;
 }
@@ -146,7 +146,7 @@ body {
 
 #container1 {
     display: inline-block;
-    width: 400px;
+    width: 450px;
     height: 40px;
     background-color: #FAE724;
     margin: 0 10px;
@@ -175,6 +175,12 @@ body {
 #searchbar {
 	width: 250px;
 	height: 30px;
+	font-size: 24px;
+}
+
+#pageSearchBar {
+	width: 250px;
+	height: 40px;
 	font-size: 24px;
 }
 
@@ -219,4 +225,45 @@ td {
 th {
 	border: inherit;
 	background: yellow;
+}
+
+a span {
+	color: green;
+}
+
+#searchContainer {
+	position: relative;
+	width: 300px;
+}
+#searchInput {
+	width: 100%;
+	padding: 10px;
+}
+#recommendationList {
+	position: absolute;
+	top: 40px;
+	width: 100%;
+	font-size: 24px;
+	border: 1px solid #ccc;
+	border-top: none;
+	max-height: 150px;
+	overflow-y: auto;
+	background: white;
+	display: none;
+}
+
+.line {
+	display: inline-block;
+	margin-left: 100px;
+	height: 40px;
+	
+}
+
+#container6 {
+	display: inline-block;
+	margin-left: 200px;
+    width: 300px;
+    height: 50px;
+    background-color: #DF3F67;
+	text-align: center;
 }
