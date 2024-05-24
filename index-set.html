@@ -15,16 +15,19 @@
 	<br>
 	<div id="div2">
 		<p>Tai yra Metamath kalbos teoremų įrodymų vizualizavimo įrankis. 
-		Tam, kad pradėti paspauskite mygtuką "Pasirinkti failą" ir pasirinkite Metamath duomenų bazę, tai yra
-		.mm tipo failą. Pasirinkus failą, sveitainė verifikuos visus teoremų įrodymus. Jeigu failas gana didelis,
-		teks kažkiek laiko palaukti, kol baigsis verifikavimo procesas. Svarbu: set.mm failas bus automatiškai pasirinktas
-		kartu su kitu .mm failu.</p>
+		Tam, kad pradėti paspauskite mygtuką "Pasirinkti failą ir verifikuoti visą set.mm failą" arba "Pasirinkti failą ir 
+		verifikuoti tik pasirinktą failą" ir pasirinkite Metamath duomenų bazę, tai yra .mm tipo failą. 
+		Pasirinkus failą, sveitainė verifikuos visus teoremų įrodymus. Jeigu failas gana didelis,
+		teks kažkiek laiko palaukti, kol baigsis verifikavimo procesas. Pirmo mygtuko atveju bus verifikavimas set.mm failo.
+		Antro mygtuko atveju bus verifikavimas tik pasirinkto failo.</p>
 	</div>
 	<br>
 	<div id="div3">
-		<button id="choosefile" onclick="document.getElementById('fileInput').click()">Pasirinkti failą</button>
-		<input type='file' id="fileInput" accept=".mm">
-		<p id="fileName"></p>
+		<button id="choosefile1" class="choosefile" onclick="document.getElementById('fileInput1').click()">Pasirinkti failą ir verifikuoti visą set.mm failą</button>
+		<button id="choosefile2" class="choosefile" onclick="document.getElementById('fileInput2').click()">Pasirinkti failą ir verifikuoti tik pasirinktą failą</button>
+		<input type='file' id="fileInput1" accept=".mm">
+		<input type='file' id="fileInput2" accept=".mm">
+		<p id="fileName" class="choosefile"></p>
 	</div>
 	<br>
 	<div id="div4">

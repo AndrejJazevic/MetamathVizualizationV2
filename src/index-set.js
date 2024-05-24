@@ -1,5 +1,6 @@
 let verifiedLabels = [];
 let verifiedList = [];
+let relevantLabels = [];
 
 const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
 
@@ -88,6 +89,16 @@ class Frame {
         this.e = [];
         this.eLabels = {};
     }
+}
+
+class Info {
+	constructor() {
+		this.label = "";
+		this.provingExpression = "";
+		this.resultList = [];
+		this.subsDict = [];
+		this.mandList = [];
+	}
 }
 
 class FrameStack extends Array {
@@ -270,10 +281,80 @@ class Metamath {
                 } catch (error) {
                     throw new Error('$p must contain proof after $=');
                 }
-
-                this.verify(label, stat, proof);
-				console.log(label);
+				if (relevantLabels.length === 0) {
+					this.verify(label, stat, proof);
+				} else {
+					if (relevantLabels.includes(label)) {
+						this.verify(label, stat, proof);
+					}
+				}
 				verifiedLabels.push(label);
+				this.labels[label] = ['$p', this.fs.makeAssertion(stat)];
+				label = null;
+            } else if (tok === '$d') {
+                this.fs.addD(toks.readstat());
+            } else if (tok === '${') {
+                this.read(toks);
+            } else if (!tok.startsWith('$')) {
+                label = tok;
+            }
+            tok = toks.readc();
+        }
+        this.fs.pop();
+    }
+	
+	readLabels(toks) {
+        this.fs.push();
+        let label = null;
+        let tok = toks.readc();
+		while (tok !== null && tok !== '$}') {
+            if (tok === '$c') {
+                for (let tok of toks.readstat()) {
+					this.fs.addC(tok);
+				}
+            } else if (tok === '$v') {
+                for (let tok of toks.readstat()) {
+					this.fs.addV(tok);
+				}
+            } else if (tok === '$f') {
+                let stat = toks.readstat();
+                if (!label) {
+					throw new Error('$f must have label');
+				}
+                if (stat.length !== 2) {
+					throw new Error('$f must have be length 2');
+				}
+                this.fs.addF(stat[1], stat[0], label);
+                this.labels[label] = ['$f', [stat[0], stat[1]]];
+                label = null;
+            } else if (tok === '$a') {
+                if (!label) {
+					throw new Error('$a must have label');
+				}
+				this.labels[label] = ['$a', this.fs.makeAssertion(toks.readstat())];
+                label = null;
+            } else if (tok === '$e') {
+                if (!label) {
+					throw new Error('$e must have label');
+				}
+                let stat = toks.readstat();
+                this.fs.addE(stat, label);
+                this.labels[label] = ['$e', stat];
+                label = null;
+            } else if (tok === '$p') {
+                if (!label) {
+					throw new Error('$p must have label');
+				}
+                let stat = toks.readstat();
+                let proof = null;
+                try {
+                    let i = stat.indexOf('$=');
+                    proof = stat.slice(i + 1);
+                    stat = stat.slice(0, i);
+                } catch (error) {
+                    throw new Error('$p must contain proof after $=');
+                }
+				relevantLabels.push(label);
 				this.labels[label] = ['$p', this.fs.makeAssertion(stat)];
 				label = null;
             } else if (tok === '$d') {
@@ -451,28 +532,22 @@ class Metamath {
 }
 
 
-function main(input) {
+function main(input, onlyInput) {
 	verifiedLabels.length = 0;
 	verifiedList.length = 0;
 	const metamath = new Metamath();
-	metamath.read(new Toks(input.reverse()));	
-}
-
-
-
-
-class Info {
-	constructor() {
-		this.label = "";
-		this.provingExpression = "";
-		this.resultList = [];
-		this.subsDict = [];
-		this.mandList = [];
+	if (onlyInput) {
+		metamath.readLabels(new Toks(input.reverse()));
+	} else {
+		metamath.read(new Toks(input.reverse()));
 	}
 }
 
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
+
+
+document.getElementById('fileInput1').addEventListener('change', function(event) {
+	relevantLabels.length = 0;
 	window.setTimeout(() => {
 		var element = document.getElementById("a1");
 		try {
@@ -495,7 +570,37 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
 		} else {
 			par.innerHTML = "Pasirinktas failas: " + file.name;
 			isDone.innerHTML = "Įrodymai verifikuojami...";
-			deleteFromDatabase(fileContent);
+			deleteFromDatabase(fileContent, false);
+		}
+	};
+	reader.readAsText(file);
+});
+
+document.getElementById('fileInput2').addEventListener('change', function(event) {
+	relevantLabels.length = 0;
+	window.setTimeout(() => {
+		var element = document.getElementById("a1");
+		try {
+			element.parentNode.removeChild(element);
+		} catch(err) {
+		
+		}
+	}, "10");
+
+	let file = event.target.files[0];
+	const reader = new FileReader();
+
+	reader.onload = function(event) {
+		const fileContent = event.target.result;
+		
+		let par = document.getElementById('fileName');
+		let isDone = document.getElementById('isDone');
+		if (file.name === "set.mm") {
+			isDone.innerHTML = "Pasirinkite ne set.mm failą.";
+		} else {
+			par.innerHTML = "Pasirinktas failas: " + file.name;
+			isDone.innerHTML = "Įrodymai verifikuojami...";
+			deleteFromDatabase(fileContent, true);
 		}
 	};
 	reader.readAsText(file);
@@ -522,7 +627,7 @@ function openDatabase(callback) {
     };
 }
 
-function deleteFromDatabase(lines) {
+function deleteFromDatabase(lines, onlyInput) {
     openDatabase(function(db) {
         if (!db.objectStoreNames.contains('proofs')) {
             console.error("Object store 'proofs' does not exist");
@@ -541,8 +646,13 @@ function deleteFromDatabase(lines) {
 					const input = await response.text();
 					
 					let total = input + lines;
-					
-					main(total.split('\n'));						
+					if (onlyInput) {
+						main(lines.split('\n'), onlyInput);
+						main(total.split('\n'), !onlyInput)
+					} else {
+						main(total.split('\n'), onlyInput);	
+					}
+										
 					addToDatabase(verifiedList);
 				} catch (err) {
 					isDone.innerHTML = "Tikrinimo metu atsirado klaida. Ištaisykite failą arba įkelkite kitą.";
@@ -590,54 +700,4 @@ function addToDatabase(verifiedList) {
             console.error('Transaction error:', event.target.error);
         };
     });
-}
-
-function addSetMM(verifiedList) {
-	openDatabase(function(db) {
-        let transaction = db.transaction('proofs', 'readwrite');
-        
-        let store = transaction.objectStore('proofs');
-        
-        for (let i = 0; i < verifiedList.length; i++) {
-            let data = { id: i, label: verifiedList[i].label, provingExpression: verifiedList[i].provingExpression, 
-            resultList: verifiedList[i].resultList, subsDict: verifiedList[i].subsDict, mandList: verifiedList[i].mandList };
-            let addRequest = store.add(data);
-            
-            addRequest.onerror = function(event) {
-                console.error('Add request error:', event.target.error);
-            };
-        }
-        
-        transaction.oncomplete = function(event) {
-            
-        };
-
-        transaction.onerror = function(event) {
-            console.error('Transaction error:', event.target.error);
-        };
-    });
-}
-
-function checkVersion(input) {
-	openDatabase(function(db) {
-		let transaction = db.transaction('load', 'readwrite');
-	
-		let objectStore = transaction.objectStore('load');
-	
-	 	let getRequest = objectStore.getAll();
-	
-		getRequest.onsuccess = function(event) {
-			let data = event.target.result;
-			if (data.length === 0) {
-				main(input.split('\n'));
-				addSetMM(verifiedList);
-				let version = { id: 1 };
-				let addRequest = objectStore.add(version);
-			}
-		};
-		
-		transaction.oncomplete = function(event) {
-
-        };
-	});
 }

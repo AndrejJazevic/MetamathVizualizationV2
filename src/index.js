@@ -280,7 +280,6 @@ class Metamath {
                 } catch (error) {
                     throw new Error('$p must contain proof after $=');
                 }
-
                 this.verify(label, stat, proof);
 				verifiedLabels.push(label);
 				this.labels[label] = ['$p', this.fs.makeAssertion(stat)];
