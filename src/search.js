@@ -1,3 +1,8 @@
+let verifiedLabels = [];
+let verifiedFinal = [];
+let emptyArray = [];
+let verifiedExpressions = [];
+
 const searchInput = document.querySelector(".searchInput");
 const input = searchInput.querySelector("input");
 const resultBox = searchInput.querySelector("#list");
@@ -7,10 +12,6 @@ const urlParams = new URLSearchParams(queryString);
 const initial = urlParams.get('initial');
 document.getElementById("header").href = initial;
 
-let verifiedLabels = [];
-let verifiedFinal = [];
-let emptyArray = [];
-let verifiedExpressions = [];
 
 let request = indexedDB.open('ProofDatabase');
 
@@ -38,7 +39,6 @@ request.onsuccess = function(event) {
 				data[i].provingExpression = data[i].provingExpression.join(' ');
 				verifiedFinal.push(data[i].provingExpression);
 			}
-			console.log(verifiedLabels);
 		} else {
 			console.error('No data found with the specified key', event.target.error);
 		}

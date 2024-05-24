@@ -1,15 +1,11 @@
 let verifiedLabels = [];
 let verifiedList = [];
 
+const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
 
 const currentPageName = window.location.pathname.split('/').pop();
 document.getElementById("header").href = currentPageName;
 
-const indexedDB = window.indexedDB || 
-				  window.mozIndexedDB ||
-				  window.webkitIndexedDB ||
-				  window.msIndexedDB ||
-				  window.shimIndexedDB;
 
 class Toks {
     constructor(lines) {
@@ -439,12 +435,6 @@ class Metamath {
 				stack.splice(stack.length - npop, stack.length);
 				stack.push(this.applySubst(result, subst));
             } else if (stepType === '$e' || stepType === '$f') {
-				//let [distinct, mandVar, hyp, result] = stepData;
-				//if (result[0] === "|-") {
-				//	info.resultList.push(stepData);
-				//	info.subsDict.push(subst);
-				//	info.mandList.push(mandVar);
-				//}
                 stack.push(stepData);
             }
         }
