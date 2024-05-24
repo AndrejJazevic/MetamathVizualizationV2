@@ -78,7 +78,6 @@ function startCanvas(step) {
 		}
 	}
 
-	
 	changeCanvas(step);
 }
 
@@ -159,8 +158,6 @@ function drawStepCircle(ctx, step) {
 	ctx.textAlign = "center";
 	ctx.textBaseline = "middle";
 	ctx.fillText(step, centerX, centerY);
-	
-	//drawnObjects.push({ type: "StepCircle", x: centerX, y: centerY, radius: radius, color: "lightblue" });
 }
 
 function drawTheoremNameRectangle(x, y, color, ctx, step) {
@@ -193,7 +190,7 @@ function drawTheoremRectangle(x, y, color, ctx, step) {
 
 	var textMetrics = ctx.measureText(second.referenceList[step-1]);
 	var textWidth = textMetrics.width;
-	var textHeight = ctx.measureText('M').width; //the width of the letter 'M' is approximately the height of the text
+	var textHeight = ctx.measureText('M').width;
 
 	var rectWidth = textWidth + 2 * padding;
 	var rectHeight = textHeight + 2 * padding;
@@ -216,7 +213,7 @@ function drawTheoremExpressionRectangle(x, y, color, ctx, step) {
 
 	var textMetrics = ctx.measureText(second.expressionList[step-1]);
 	var textWidth = textMetrics.width;
-	var textHeight = ctx.measureText('M').width; //the width of the letter 'M' is approximately the height of the text
+	var textHeight = ctx.measureText('M').width;
 
 	var rectWidth = textWidth + 2 * padding;
 	var rectHeight = textHeight + 2 * padding;
@@ -239,7 +236,7 @@ function drawHypothesesNameRectangle(x, y, color, ctx, step) {
 	
 	var textMetrics = ctx.measureText("Hipotezės.");
 	var textWidth = textMetrics.width;
-	var textHeight = ctx.measureText('M').width; //the width of the letter 'M' is approximately the height of the text
+	var textHeight = ctx.measureText('M').width;
 	
 	var rectWidth = textWidth + 2 * padding;
 	var rectHeight = textHeight + 2 * padding;
@@ -262,7 +259,7 @@ function drawHypothesesRectangle(x, y, color, ctx, step, i) {
 
 	var textMetrics = ctx.measureText(second.hypListList[step-1][i]);
 	var textWidth = textMetrics.width;
-	var textHeight = ctx.measureText('M').width; //the width of the letter 'M' is approximately the height of the text
+	var textHeight = ctx.measureText('M').width;
 
 	var rectWidth = textWidth + 2 * padding;
 	var rectHeight = textHeight + 2 * padding;
@@ -285,7 +282,7 @@ function drawHypothesesExpressionRectangle(x, y, color, ctx, step, i) {
 
 	var textMetrics = ctx.measureText(second.hypExpressionListList[step-1][i]);
 	var textWidth = textMetrics.width;
-	var textHeight = ctx.measureText('M').width; //the width of the letter 'M' is approximately the height of the text
+	var textHeight = ctx.measureText('M').width;
 
 	var rectWidth = textWidth + 2 * padding;
 	var rectHeight = textHeight + 2 * padding;
@@ -303,23 +300,35 @@ function drawHypothesesExpressionRectangle(x, y, color, ctx, step, i) {
 }
 
 function drawArrow(ctx, fromX, fromY, toX, toY) {
-    const headLength = 15; // length of head in pixels
-    const dx = toX - fromX;
-    const dy = toY - fromY;
-    const angle = Math.atan2(dy, dx);
-
-    ctx.save();
-
-    ctx.beginPath();
-    ctx.moveTo(fromX, fromY);
-    ctx.lineTo(toX, toY);
-    ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
-    ctx.moveTo(toX, toY);
-    ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
-    ctx.strokeStyle = "#3BF116";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
+	const angle = Math.atan2(toY - fromY, toX - fromX);
+	
+	const arrowHeadX = toX - 30 * Math.cos(angle);
+	const arrowHeadY = toY - 30 * Math.sin(angle);
+	
+	const arrowLeftX = arrowHeadX - 15 * Math.cos(angle - Math.PI / 2);
+	const arrowLeftY = arrowHeadY - 15 * Math.sin(angle - Math.PI / 2);
+	
+	const arrowRightX = arrowHeadX - 15 * Math.cos(angle + Math.PI / 2);
+	const arrowRightY = arrowHeadY - 15 * Math.sin(angle + Math.PI / 2);
+	
+	ctx.strokeStyle = "#3BF116";
+	ctx.fillStyle = "#3BF116";
+	ctx.lineWidth = 4;
+	
+	ctx.save();
+	
+	ctx.beginPath();
+	ctx.moveTo(fromX, fromY);
+	ctx.lineTo(arrowHeadX, arrowHeadY);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(toX, toY);
+	ctx.lineTo(arrowLeftX, arrowLeftY);
+	ctx.lineTo(arrowRightX, arrowRightY);
+	ctx.closePath();
+	ctx.fill();
+	
     ctx.restore();
 	
 	
@@ -400,10 +409,24 @@ function addMousedownAll(event) {
 
     const obj = getObjectAt(mouseX, mouseY);
     if (obj) {
+		canvas.removeEventListener("mousedown", addMousedown);
+		//canvas.removeEventListener('click', clickFigures);
+		//canvas.removeEventListener("mousemove", addMousemove);
+		//canvas.removeEventListener("mouseup", addMouseup);
+		//canvas.removeEventListener("mouseleave", addMouseleave);
+		//canvas.removeEventListener("click", addClick);
         draggingObject = obj;
         offsetX = mouseX - obj.x;
         offsetY = mouseY - obj.y;
+		canvas.addEventListener("mousedown", addMousedown);
+		//canvas.addEventListener('click', clickFigures);
+		//canvas.addEventListener("mousemove", addMousemove);
+		//canvas.addEventListener("mouseup", addMouseup);
+		//canvas.addEventListener("mouseleave", addMouseleave);
+		//canvas.addEventListener("click", addClick);
     }
+	canvas.addEventListener('click', clickFigures);
+	
 }
 
 function addMousemoveAll(event) {
@@ -417,6 +440,7 @@ function addMousemoveAll(event) {
 
         changeCanvas(step);
     }
+	canvas.removeEventListener('click', clickFigures);
 }
 
 function addMouseupAll(event) {
@@ -427,25 +451,23 @@ function addMouseupAll(event) {
 function addMousedown(event) {
     const mouseX = event.clientX - canvas.getBoundingClientRect().left;
     const mouseY = event.clientY - canvas.getBoundingClientRect().top;
-
+	
     if (mouseX >= rect.x && mouseX <= rect.x + rect.width &&
         mouseY >= rect.y && mouseY <= rect.y + rect.height) {
         isDragging = true;
 		offsetXSub = mouseX - rect.x;
         offsetYSub = mouseY - rect.y;
     }
-	canvas.addEventListener('click', clickFigures);
 }
 
 function addMousemove(event) {
     if (isDragging) {
-		canvas.removeEventListener('click', clickFigures);
         const mouseX = event.clientX - canvas.getBoundingClientRect().left;
         const mouseY = event.clientY - canvas.getBoundingClientRect().top;
 
 		rect.x = mouseX - offsetXSub;
 		rect.y = mouseY - offsetYSub;
-		changeCanvas(step);	
+		changeCanvas(step);
     }
 }
 
@@ -483,7 +505,6 @@ function clickFigures(event) {
 			clickedHypothesesInformationRectangle = 0;
 			prevIndex = -1;
             clickedTheoremExpressionRectangle += 1;
-
             if (clickedTheoremExpressionRectangle % 2 !== 0) {
                 let padding = 10;
                 textLines = [];
@@ -515,9 +536,10 @@ function clickFigures(event) {
                 canvas.addEventListener("mouseup", addMouseup);
                 canvas.addEventListener("mouseleave", addMouseleave);
                 canvas.addEventListener("click", addClick);
-
+				
+				
+				drawTheoremSubstitutionRectangle(rect, textLines);
 				changeCanvas(step);
-                drawTheoremSubstitutionRectangle(rect, textLines);
             } else {
 				drawnObjects = drawnObjects.filter((rectangle) => rectangle.type !== "SubstitutionRectangle");
                 changeCanvas(step);
@@ -554,6 +576,8 @@ function clickFigures(event) {
 
 				textLines.push("");
 				textLines.push(second.hypExpressionListList[step-1][index]);
+				
+				console.log(second.hypStepNumber[step-1]);
 				if (second.hypStepNumber[step-1][index] !== undefined) {
 					textLines.push("Hipotezės nuoroda į " + second.hypStepNumber[step-1][index] + " žingsnį.");
 				} else {
@@ -582,9 +606,9 @@ function clickFigures(event) {
                 canvas.addEventListener("mouseleave", addMouseleave);
                 canvas.addEventListener("click", addClick);
 				
-				
-				changeCanvas(step);
 				drawTheoremSubstitutionRectangle(rect, textLines);
+				changeCanvas(step);
+
             } else {
 				drawnObjects = drawnObjects.filter((rectangle) => rectangle.type !== "SubstitutionRectangle");
 				changeCanvas(step);	
@@ -879,6 +903,21 @@ function fillData(data) {
 
 	for (let m = 0; m < data.resultList.length; m++) {
 		if (Array.isArray(data.resultList[m][3])) {
+			var str1 = "";
+			for (let n = 0; n < Object.keys(data.subsDict[m]).length; n++) {
+				data.subsDict[m][data.mandList[m][n][1]].forEach((item, index) => { if (item == '->') data.subsDict[m][data.mandList[m][n][1]][index] = '\u2192'; });
+				var str = data.mandList[m][n][1] + " kintamasis keičiamas į " + data.subsDict[m][data.mandList[m][n][1]].join(' ');
+				str1 = str1.concat('\n', str);
+			}
+			str1 = str1.substring(1);
+			proof.substList.push(str1);
+		} else {
+			proof.substList.push('');
+		}
+	}
+
+	for (let m = 0; m < data.resultList.length; m++) {
+		if (Array.isArray(data.resultList[m][3])) {
 			let a = data.resultList[m][3];
 			a.forEach((item, index) => { if (item == '->') a[index] = '\u2192'; });
 			a.forEach((item, index) => { if (item == '|-') a[index] = '\u22A2'; });
@@ -942,20 +981,7 @@ function fillData(data) {
 			proof.hypExpressionListList.push([data.resultList[m].join(' ')]);
 		}
 	}
-	for (let m = 0; m < data.resultList.length; m++) {
-		if (Array.isArray(data.resultList[m][3])) {
-			var str1 = "";
-			for (let n = 0; n < Object.keys(data.subsDict[m]).length; n++) {
-				data.subsDict[m][data.mandList[m][n][1]].forEach((item, index) => { if (item == '->') data.subsDict[m][data.mandList[m][n][1]][index] = '\u2192'; });
-				var str = data.mandList[m][n][1] + " kintamasis keičiamas į " + data.subsDict[m][data.mandList[m][n][1]].join(' ');
-				str1 = str1.concat('\n', str);
-			}
-			str1 = str1.substring(1);
-			proof.substList.push(str1);
-		} else {
-			proof.substList.push('');
-		}
-	}
+	
 	
 	let copiedArray = proof.expressionList.slice();
 	for (let m = 0; m < data.resultList.length; m++) {
@@ -979,6 +1005,7 @@ function fillData(data) {
 			proof.hypStepNumber.push([]);
 		}
 	}
+	//console.log(proof);
 	first = data;
 	second = proof;
 }
@@ -997,6 +1024,7 @@ request.onsuccess = function(event) {
     
     getRequest.onsuccess = function(event) {
         let data = event.target.result;
+		//console.log(data);
         if (data) {
 			fillData(data);
 			document.getElementById('changetheorem').innerHTML = 'Pereiti prie kitos teoremos nuo ' + first.label;

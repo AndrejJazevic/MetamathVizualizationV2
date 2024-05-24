@@ -74,6 +74,7 @@ a.button {
 
 
 .box {
+	vertical-align: top;
     display: inline-block;
     width: 300px;
     height: 40px;
@@ -137,7 +138,7 @@ body {
     width: 450px;
     height: 40px;
     background-color: #FAE724;
-    margin: 0 10px;
+    margin: 10px;
 	text-align: center;
 	line-height: 10px;
 	border-radius: 100px;
@@ -149,7 +150,7 @@ body {
     width: 450px;
     height: 40px;
     background-color: #FAE724;
-    margin: 0 10px;
+    margin: 10px;
 	text-align: center;
 	line-height: 10px;
 	border-radius: 100px;
@@ -254,16 +255,18 @@ a span {
 
 .line {
 	display: inline-block;
-	margin-left: 100px;
+	margin-top: 10px;
+	margin-left: 70px;
 	height: 40px;
-	
+	vertical-align: top;
 }
+
 
 #container6 {
 	display: inline-block;
 	margin-left: 200px;
     width: 300px;
     height: 50px;
-    background-color: #DF3F67;
+    background-color: #F35B4F;
 	text-align: center;
 }

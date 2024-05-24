@@ -1,17 +1,11 @@
 let verifiedLabels = [];
 let verifiedList = [];
 
-
+const indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB || window.shimIndexedDB;
 
 const currentPageName = window.location.pathname.split('/').pop();
 document.getElementById("header").href = currentPageName;
 
-
-const indexedDB = window.indexedDB || 
-				  window.mozIndexedDB ||
-				  window.webkitIndexedDB ||
-				  window.msIndexedDB ||
-				  window.shimIndexedDB;
 
 class Toks {
     constructor(lines) {
@@ -94,6 +88,16 @@ class Frame {
         this.e = [];
         this.eLabels = {};
     }
+}
+
+class Info {
+	constructor() {
+		this.label = "";
+		this.provingExpression = "";
+		this.resultList = [];
+		this.subsDict = [];
+		this.mandList = [];
+	}
 }
 
 class FrameStack extends Array {
@@ -396,6 +400,12 @@ class Metamath {
         for (let label of proof) {
             let [stepType, stepData] = this.labels[label];
 			
+			if (stepType === '$e') {
+				info.resultList.push(stepData);
+				info.subsDict.push([]);
+				info.mandList.push([]);
+			}
+			
             if (stepType === '$a' || stepType === '$p') {
                 let [distinct, mandVar, hyp, result] = stepData;
                 let npop = mandVar.length + hyp.length;
@@ -457,18 +467,6 @@ function main(input) {
 	metamath.read(new Toks(input.reverse()));
 }
 
-
-
-
-class Info {
-	constructor() {
-		this.label = "";
-		this.provingExpression = "";
-		this.resultList = [];
-		this.subsDict = [];
-		this.mandList = [];
-	}
-}
 
 
 document.getElementById('fileInput').addEventListener('change', function(event) {
