@@ -45,6 +45,7 @@ body {
 	text-align: center;
 	top: 14px;
 	margin-left: 30px;
+	margin-right: 30px;
     font-size: 24px;
 }
 
@@ -55,6 +56,10 @@ body {
 
 #choosefile2 {
 	width: 350px;
+	font-size: 16px;
+}
+
+#choosefile {
 	font-size: 16px;
 }
 
@@ -117,6 +122,7 @@ a.button {
 	text-align: center;
 	top: 14px;
 	margin-left: 30px;
+	margin-right: 30px;
     font-size: 24px;
 }
 
