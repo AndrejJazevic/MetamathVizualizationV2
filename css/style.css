@@ -1,25 +1,5 @@
-#canvas{
-	position: absolute;
-	background: black;
-	width: 100%;
-	height: 100%;
-	top: 250px;
-	left: 0;
-}
-
-#header {
-	text-decoration: none;
-	color: black;
-	display: block;
-    height: 100%;
-    width: 100%;
-}
-
-a.listProof {
-	text-decoration: none;
-	font-weight: bold;
-	color: red;
-	font-size: 24px;
+body {
+	background-color: #19B4E9;
 }
 
 #div1 {
@@ -30,25 +10,121 @@ a.listProof {
     height: 80px;
 }
 
+#header {
+	text-decoration: none;
+	color: black;
+	display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.not-selectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+
+
+
+#div2 {
+    background-color: #FAE724;
+    margin: 0 10px;
+	text-align: center;
+	height: 180px;
+	line-height: 30px;
+	border-radius: 100px;
+}
+
+#div2 p {
+	position:relative;
+	text-align: center;
+	top: 14px;
+	margin-left: 30px;
+    font-size: 24px;
+}
+
+#choosefile1 {
+	width: 350px;
+	font-size: 16px;
+}
+
+#choosefile2 {
+	width: 350px;
+	font-size: 16px;
+}
+
 #fileName {
-	position: absolute;
 	font-size: 24px;
-	top: 265px;
-	left: 140px;
 }
 
 #isDone {
 	font-size: 24px;
 }
 
+#fileInput1 {
+	display:none;
+}
+
+#fileInput2 {
+	display:none;
+}
+
 #fileInput {
 	display:none;
+}
+
+.choosefile {
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 10px;
 }
 
 button {
 	display:block;
 	width:120px;
 	height:30px;
+}
+
+a.button {
+    padding: 1px 6px;
+    border: 1px outset buttonborder;
+    border-radius: 3px;
+    color: buttontext;
+    background-color: buttonface;
+    text-decoration: none;
+}
+
+
+
+
+
+#div5 {
+    background-color: #FAE724;
+    margin: 0 10px;
+	text-align: center;
+	height: 120px;
+	line-height: 30px;
+	border-radius: 100px;
+}
+
+#div5 p {
+	position:relative;
+	text-align: center;
+	top: 14px;
+	margin-left: 30px;
+    font-size: 24px;
+}
+
+a.listProof {
+	text-decoration: none;
+	font-weight: bold;
+	color: red;
+	font-size: 24px;
 }
 
 li {
@@ -62,16 +138,6 @@ ul {
   padding: 20px;
   list-style-type: none;
 }
-
-a.button {
-    padding: 1px 6px;
-    border: 1px outset buttonborder;
-    border-radius: 3px;
-    color: buttontext;
-    background-color: buttonface;
-    text-decoration: none;
-}
-
 
 .box {
 	vertical-align: top;
@@ -87,6 +153,55 @@ a.button {
 	margin-top: 10px;
 }
 
+.box:hover {
+    cursor: pointer;
+	background-color: #A2F9BD;
+}
+
+.box b {
+	position:relative;
+	top: 14px;
+	font-size: 24px;
+}
+
+#searchbar {
+	width: 250px;
+	height: 30px;
+	font-size: 24px;
+}
+
+#searchInput {
+	width: 100%;
+	padding: 10px;
+}
+
+#label1 {
+	font-size: 24px;
+}
+
+a span {
+	color: green;
+}
+
+
+
+
+
+#canvas{
+	position: absolute;
+	background: black;
+	width: 100%;
+	height: 100%;
+	top: 250px;
+	left: 0;
+}
+
+.box1 b {
+	position:relative;
+	top: 14px;
+	font-size: 24px;
+}
+
 .click {
     display: inline-block;
     width: 300px;
@@ -98,51 +213,9 @@ a.button {
 	border-radius: 100px;
 }
 
-body {
-	background-color: #19B4E9;
-}
-
-.box:hover {
-    cursor: pointer;
-	background-color: #A2F9BD;
-}
 .click:hover {
     cursor: pointer;
 	background-color: #A2F9BD;
-}
-
-#container3:hover {
-    cursor: pointer;
-	background-color: #A2F9BD;
-}
-
-#container1:hover {
-    cursor: pointer;
-	background-color: #A2F9BD;
-}
-
-.box b {
-	position:relative;
-	top: 14px;
-	font-size: 24px;
-}
-
-.box1 b {
-	position:relative;
-	top: 14px;
-	font-size: 24px;
-}
-
-#container3 {
-	display: inline-block;
-    width: 450px;
-    height: 40px;
-    background-color: #FAE724;
-    margin: 10px;
-	text-align: center;
-	line-height: 10px;
-	border-radius: 100px;
-	cursor: pointer;
 }
 
 #container1 {
@@ -157,26 +230,26 @@ body {
 	cursor: pointer;
 }
 
-#div2 {
+#container1:hover {
+    cursor: pointer;
+	background-color: #A2F9BD;
+}
+
+#container3 {
+	display: inline-block;
+    width: 450px;
+    height: 40px;
     background-color: #FAE724;
-    margin: 0 10px;
+    margin: 10px;
 	text-align: center;
-	height: 130px;
-	line-height: 30px;
+	line-height: 10px;
 	border-radius: 100px;
+	cursor: pointer;
 }
 
-#div2 p {
-	position:relative;
-	top: 14px;
-	margin-left: 30px;
-    font-size: 24px;
-}
-
-#searchbar {
-	width: 250px;
-	height: 30px;
-	font-size: 24px;
+#container3:hover {
+    cursor: pointer;
+	background-color: #A2F9BD;
 }
 
 #pageSearchBar {
@@ -188,24 +261,6 @@ body {
 input::placeholder {
 	font-size: 24px;
 }
-
-#choosefile {
-	font-size: 16px;
-}
-
-#label1 {
-	font-size: 24px;
-}
-
-.not-selectable {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
 
 table {
 	border: 1px solid;
@@ -228,18 +283,11 @@ th {
 	background: yellow;
 }
 
-a span {
-	color: green;
-}
-
 #searchContainer {
 	position: relative;
 	width: 300px;
 }
-#searchInput {
-	width: 100%;
-	padding: 10px;
-}
+
 #recommendationList {
 	position: absolute;
 	top: 40px;
@@ -260,7 +308,6 @@ a span {
 	height: 40px;
 	vertical-align: top;
 }
-
 
 #container6 {
 	display: inline-block;

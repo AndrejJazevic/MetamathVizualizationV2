@@ -11,7 +11,7 @@ var recommendationList;
 
 let clickedTheoremExpressionRectangle = 0;
 let clickedHypothesesInformationRectangle = 0;
-let rect;
+let rect = null;
 let isDragging = false;
 let draggingObject = null;
 let offsetXSub;
@@ -330,12 +330,6 @@ function drawArrow(ctx, fromX, fromY, toX, toY) {
 	ctx.fill();
 	
     ctx.restore();
-	
-	
-	//if (drawnObjects.filter(obj => obj.type === "Arrow")) {
-	//	drawnObjects.push({ type: "Arrow", fromX: fromX, fromY: fromY, toX: toX,  toY:  toY, color: "#3BF116" });
-	//}
-
 }
 
 function drawTheoremSubstitutionRectangle(rect, textLines) {
@@ -366,10 +360,7 @@ function drawTheoremSubstitutionRectangle(rect, textLines) {
 		});
 	}
 
-	//if (drawnObjects.filter(obj => obj.type === "SubstitutionRectangle")[0].length === 0) {
-		drawnObjects.push({ type: "SubstitutionRectangle", x: rect.x, y: rect.y, width: rect.width, height: rect.height, color: "blue" });
-	//}
-	
+	drawnObjects.push({ type: "SubstitutionRectangle", x: rect.x, y: rect.y, width: rect.width, height: rect.height, color: "blue" });
 }
 
 
@@ -403,27 +394,19 @@ function sortDrawnObjects(a, b) {
 
 
 function addMousedownAll(event) {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
+    const currentRect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - currentRect.left;
+    const mouseY = event.clientY - currentRect.top;
 
     const obj = getObjectAt(mouseX, mouseY);
     if (obj) {
 		canvas.removeEventListener("mousedown", addMousedown);
-		//canvas.removeEventListener('click', clickFigures);
-		//canvas.removeEventListener("mousemove", addMousemove);
-		//canvas.removeEventListener("mouseup", addMouseup);
-		//canvas.removeEventListener("mouseleave", addMouseleave);
-		//canvas.removeEventListener("click", addClick);
+		
         draggingObject = obj;
         offsetX = mouseX - obj.x;
         offsetY = mouseY - obj.y;
+		
 		canvas.addEventListener("mousedown", addMousedown);
-		//canvas.addEventListener('click', clickFigures);
-		//canvas.addEventListener("mousemove", addMousemove);
-		//canvas.addEventListener("mouseup", addMouseup);
-		//canvas.addEventListener("mouseleave", addMouseleave);
-		//canvas.addEventListener("click", addClick);
     }
 	canvas.addEventListener('click', clickFigures);
 	
@@ -451,13 +434,15 @@ function addMouseupAll(event) {
 function addMousedown(event) {
     const mouseX = event.clientX - canvas.getBoundingClientRect().left;
     const mouseY = event.clientY - canvas.getBoundingClientRect().top;
-	
-    if (mouseX >= rect.x && mouseX <= rect.x + rect.width &&
-        mouseY >= rect.y && mouseY <= rect.y + rect.height) {
-        isDragging = true;
-		offsetXSub = mouseX - rect.x;
-        offsetYSub = mouseY - rect.y;
-    }
+	if (rect !== null) {
+		if (mouseX >= rect.x && mouseX <= rect.x + rect.width &&
+			mouseY >= rect.y && mouseY <= rect.y + rect.height) {
+			isDragging = true;
+			offsetXSub = mouseX - rect.x;
+			offsetYSub = mouseY - rect.y;
+		}
+	}
+
 }
 
 function addMousemove(event) {
@@ -577,7 +562,6 @@ function clickFigures(event) {
 				textLines.push("");
 				textLines.push(second.hypExpressionListList[step-1][index]);
 				
-				console.log(second.hypStepNumber[step-1]);
 				if (second.hypStepNumber[step-1][index] !== undefined) {
 					textLines.push("Hipotezės nuoroda į " + second.hypStepNumber[step-1][index] + " žingsnį.");
 				} else {
@@ -1005,7 +989,6 @@ function fillData(data) {
 			proof.hypStepNumber.push([]);
 		}
 	}
-	//console.log(proof);
 	first = data;
 	second = proof;
 }
@@ -1024,7 +1007,6 @@ request.onsuccess = function(event) {
     
     getRequest.onsuccess = function(event) {
         let data = event.target.result;
-		//console.log(data);
         if (data) {
 			fillData(data);
 			document.getElementById('changetheorem').innerHTML = 'Pereiti prie kitos teoremos nuo ' + first.label;
